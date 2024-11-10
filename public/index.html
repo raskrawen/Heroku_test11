@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SRP vejleder</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    #chat {
+      width: 75%;
+      height: 75%;
+      margin-top: 20px;
+      border: 1px solid #ddd;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+    }
+    #messages {
+      flex: 1;
+      overflow-y: auto;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    #messages li {
+      margin-bottom: 10px;
+    }
+    .user {
+      color: blue;
+    }
+    .bot {
+      color: green;
+    }
+    #input-container {
+      display: flex;
+      margin-top: 10px;
+    }
+    #input {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+    }
+    #send-button {
+      padding: 10px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>SRP vejleder</h1>
+<br>
+<h3>Dette er en SRP chatbot. Tjek vigtig information.</h3>
+  <div id="chat">
+    <ul id="messages"></ul>
+    <div id="input-container">
+      <input id="input" autocomplete="off" placeholder="Skriv en besked..." />
+      <button id="send-button" onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const input = document.getElementById("input");
+    const messages = document.getElementById("messages");
+    const sendButton = document.getElementById("send-button");
+
+    socket.on("bot message", function(msg) {
+      const item = document.createElement("li");
+      item.textContent = "SRPvejleder: " + msg;
+      item.className = "bot";
+      messages.appendChild(item);
+      messages.scrollTop = messages.scrollHeight;
+    });
+
+    function sendMessage() {
+      const message = input.value;
+      if (message) {
+        const item = document.createElement("li");
+        item.textContent = "Du: " + message;
+        item.className = "user";
+        messages.appendChild(item);
+        messages.scrollTop = messages.scrollHeight;
+        socket.emit("user message", message);
+        input.value = "";
+      }
+    }
+
+    // Reagerer på "Enter"-tasten
+    input.addEventListener("keydown", function(event) {
+      if (event.key === "Enter") {
+        sendMessage();
+      }
+    });
+
+    // Håndterer klik på send-knappen
+    sendButton.addEventListener("click", sendMessage);
+  </script>
+</body>
+</html>
