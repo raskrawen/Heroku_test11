@@ -22,7 +22,7 @@ io.on('connection', (socket) => {
 
   socket.on('user message', async (msg) => {
     try {
-      messages.push({ role: 'system', content: roleDescription });
+      messages.push({ role: 'assistant', content: roleDescription });
       messages.push({ role: 'user', content: msg });
       const response = await axios.post(
         'https://api.openai.com/v1/chat/completions',
@@ -36,6 +36,7 @@ io.on('connection', (socket) => {
       );
 
       const botReply = response.data.choices[0].message.content;
+      messages.push({ role: 'assistant', content: botReply });
       socket.emit('bot message', botReply);
 
     } catch (error) {
