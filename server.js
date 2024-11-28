@@ -1,6 +1,6 @@
 // server.js
-// gøres klar til multiple clients.
-//virker for een klient. Test for flere 
+// RKW nov 2024
+// virker for flere klienter.
 
 const express = require('express');
 const http = require('http');
