@@ -1,8 +1,8 @@
 // server.js
-// RKW nov 2024
+// RKW jan 2025
 // virker for flere klienter.
-// virker kun på Heruko. 
-// TEstet med klasse 3u.
+// virker uden heroku. 
+// oprette function calling.
 
 const express = require('express');
 const http = require('http');
@@ -18,6 +18,20 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY; // Hent API-nøglen fra milj�
 const messages = {};
 const roleDescription = 'Du er en venlig assistent';
 
+const functions = {
+  calculateSum: {
+    description: "Calculate the sum of two numbers",
+    parameters: {
+      type: "object",
+      properties: {
+        a: { type: "number", description: "First number" },
+        b: { type: "number", description: "Second number" }
+      },
+      required: ["a", "b"]
+    },
+    function: ({ a, b }) => a + b
+  }
+};
 
 app.use(express.static('public'));
 
@@ -37,7 +51,8 @@ io.on('connection', (socket) => {
         {
           model: 'gpt-4o-mini',
           messages: messages[socket.id],
-          user: socket.id
+          user: socket.id,
+          functions: [functions.calculateSum]
         },
         {
           headers: { Authorization: `Bearer ${OPENAI_API_KEY}` }
