@@ -18,6 +18,12 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY; // Hent API-nÃ¸glen fra miljÃ
 const roleDescription = 'Du er en venlig assistent';
 const messages = {};
 
+const functions = {
+  getWeatherInMordor: () => {
+    return 'Not nice';
+  }
+};
+
 app.use(express.static('public'));
 
 io.on('connection', (socket) => {
@@ -36,7 +42,13 @@ io.on('connection', (socket) => {
         {
           model: 'gpt-4o-mini',
           messages: messages[socket.id],
-          user: socket.id
+          user: socket.id,
+          functions: [
+            {
+              name: 'getWeatherInMordor',
+              description: 'Returns the weather report for Mordor'
+            }
+          ]
         },
         {
           headers: { Authorization: `Bearer ${OPENAI_API_KEY}` }
@@ -44,8 +56,14 @@ io.on('connection', (socket) => {
       );
 
       const botReply = response.data.choices[0].message.content;
-      messages[socket.id].push({ role: 'assistant', content: botReply });
-      socket.emit('bot message', botReply);
+      if (response.data.choices[0].finish_reason === 'function_call' && response.data.choices[0].message.function_call.name === 'getWeatherInMordor') {
+        const functionResponse = functions.getWeatherInMordor();
+        messages[socket.id].push({ role: 'function', name: 'getWeatherInMordor', content: functionResponse });
+        socket.emit('bot message', functionResponse);
+      } else {
+        messages[socket.id].push({ role: 'assistant', content: botReply });
+        socket.emit('bot message', botReply);
+      }
 
     } catch (error) {
       console.error(error);
