@@ -1,8 +1,7 @@
 // server.js
 // RKW nov 2024
 // virker for flere klienter.
-// virker kun på Heruko. 
-// TEstet med klasse 3u.
+// spørg om vejret i Mordor. Svar: not nice.
 
 const express = require('express');
 const http = require('http');
