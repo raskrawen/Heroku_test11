@@ -12,9 +12,10 @@ const axios = require('axios');
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
+require('dotenv').config();
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY; // Hent API-nøglen fra miljøvariabler
 
-const roleDescription = process.env.CHATBOT_ROLE;
+const roleDescription = 'Du er en venlig assistent';
 const messages = {};
 
 app.use(express.static('public'));
