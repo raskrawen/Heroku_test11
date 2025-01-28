@@ -12,16 +12,18 @@ const axios = require('axios');
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY; // Hent API-nøglen fra miljøvariabler
 
-const roleDescription = process.env.CHATBOT_ROLE;
+require('dotenv').config();
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY; // Hent API-nøglen fra miljøvariabler
 const messages = {};
+const roleDescription = 'Du er en venlig assistent';
+
 
 app.use(express.static('public'));
 
 io.on('connection', (socket) => {
   console.log('A user connected');
-
+  
   if (!messages[socket.id]) {
     messages[socket.id] = [{ role: 'system', content: roleDescription }]
   }
