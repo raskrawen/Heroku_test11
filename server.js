@@ -20,6 +20,12 @@ const messages = {};
 const functions = {
   getWeatherInMordor: () => {
     return 'Not nice';
+  },
+  getWeatherInGondor: () => {
+    return 'Sunny';
+  },
+  calcGyx: (x) => {
+    return (x + 5) / 10;
   }
 };
 
@@ -46,6 +52,21 @@ io.on('connection', (socket) => {
             {
               name: 'getWeatherInMordor',
               description: 'Returns the weather report for Mordor'
+            },
+            {
+              name: 'getWeatherInGondor',
+              description: 'Returns the weather report for Gondor'
+            },
+            {
+              name: 'calcGyx',
+              description: 'Calculates the value of (num + 5) / 10',
+              parameters: {
+                    "type": "object",
+                    "properties": {
+                        "x": {"type": "number", "description": "The input number"}
+                    },
+                    "required": ["x"]
+              }
             }
           ]
         },
@@ -56,13 +77,28 @@ io.on('connection', (socket) => {
 
       const botReply = response.data.choices[0].message.content;
       if (response.data.choices[0].finish_reason === 'function_call' && response.data.choices[0].message.function_call.name === 'getWeatherInMordor') {
+        //console.log(response.data.choices[0].finish_reason);
+        //console.log(response.data.choices[0].message.function_call.name);
         const functionResponse = functions.getWeatherInMordor();
         messages[socket.id].push({ role: 'function', name: 'getWeatherInMordor', content: functionResponse });
+        //console.log(functionResponse);
         socket.emit('bot message', functionResponse);
-      } else {
+      } 
+      else if (response.data.choices[0].finish_reason === 'function_call' && response.data.choices[0].message.function_call.name === 'getWeatherInGondor') {
+        const functionResponse = functions.getWeatherInGondor();
+        messages[socket.id].push({ role: 'function', name: 'getWeatherInGondor', content: functionResponse });
+        socket.emit('bot message', functionResponse);
+      }
+      else if (response.data.choices[0].finish_reason === 'function_call' && response.data.choices[0].message.function_call.name === 'calcGyx') {
+        const functionResponse = functions.calcGyx(parseFloat(response.data.choices[0].message.function_call.arguments[0]));
+        messages[socket.id].push({ role: 'function', name: 'calcGyx', content: functionResponse.toString() });
+        socket.emit('bot message', functionResponse.toString());
+      }
+      else {
         messages[socket.id].push({ role: 'assistant', content: botReply });
         socket.emit('bot message', botReply);
       }
+      console.log(response.data.choices[0]);
 
     } catch (error) {
       console.error(error);
