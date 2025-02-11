@@ -5,22 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SRP chatbot</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
+     body {
+      font-family: Courier, monospace;
+      background-color: black;
+      color: white;
       display: flex;
-      flex-direction: column;
-      align-items: center;
       height: 100vh;
       margin: 0;
     }
-    #chat {
-      width: 75%;
-      height: 80%;
-      margin-top: 5px;
-      border: 1px solid #ddd;
-      padding: 5px;
+    #image-container {
+      width: 50%;
+      background: url('./vv2.png') no-repeat center center;
+      background-size: cover;
+    }
+    #chat-container {
+      width: 50%;
       display: flex;
       flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
     }
     #messages {
       flex: 1;
@@ -28,24 +32,29 @@
       list-style: none;
       padding: 0;
       margin: 0;
+      width: 100%;
     }
     #messages li {
       margin-bottom: 10px;
     }
     .user {
-      color: green;
+      color: lightgreen;
     }
     .bot {
-      color: blue;
+      color: lightblue;
     }
     #input-container {
       display: flex;
       margin-top: 10px;
+      width: 100%;
     }
     #input {
       flex: 1;
       padding: 10px;
       font-size: 16px;
+      background-color: #222;
+      color: white;
+      border: 1px solid white;
     }
     #send-button {
       padding: 10px;
@@ -58,9 +67,9 @@
   </style>
 </head>
 <body>
-  <h3>Dette er en SRP vejleder-chatbot. Tjek vigtig information. Undgå personlige oplysninger.</h3>
-  <div id="chat">
-    <ul id="messages"></ul>
+  <div id="image-container"></div>
+  <div id="chat-container">
+    <div id="messages"></div>
     <div id="input-container">
       <input id="input" autocomplete="off" placeholder="Skriv en besked..." />
       <button id="send-button" onclick="sendMessage()">Send</button>

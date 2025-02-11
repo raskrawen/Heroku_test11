@@ -1,8 +1,7 @@
 // server.js
 // RKW nov 2024
 // virker for flere klienter.
-// virker kun på Heruko. 
-// TEstet med klasse 3u.
+// Skal bruges til ERv1.0.0
 
 const express = require('express');
 const http = require('http');
@@ -13,8 +12,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY; // Hent API-nøglen fra miljøvariabler
-
-const roleDescription = process.env.CHATBOT_ROLE;
+const roleDescription = 'Du er en venlig assistent';
 const messages = {};
 
 app.use(express.static('public'));
