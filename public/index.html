@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SRP chatbot</title>
+  <title></title>
   <style>
      body {
       font-family: Courier, monospace;
@@ -15,7 +15,7 @@
     }
     #image-container {
       width: 50%;
-      background: url('./vv2.png') no-repeat center center;
+      background: url('./vv4.png') no-repeat center center;
       background-size: cover;
     }
     #chat-container {
@@ -54,12 +54,12 @@
       font-size: 16px;
       background-color: #222;
       color: white;
-      border: 1px solid white;
+      border: none;
     }
     #send-button {
       padding: 10px;
       font-size: 16px;
-      background-color: #007bff;
+      background-color: rgb(77, 76, 76);
       color: white;
       border: none;
       cursor: pointer;
@@ -82,19 +82,59 @@
     const messages = document.getElementById("messages");
     const sendButton = document.getElementById("send-button");
 
+    function speakMessage(message) {
+      const utterance = new SpeechSynthesisUtterance(message);
+      utterance.lang = "da-DK"; // Sæt til dansk
+      speechSynthesis.speak(utterance);
+    }
+
+    function speakChoppy(message) {
+    const utterance = new SpeechSynthesisUtterance(message);
+    const voice = speechSynthesis.getVoices().find(v => v.lang.startsWith("da"));
+    if (voice) utterance.voice = voice;
+    let words = message.split(" ");
+    let index = 0;
+
+    function speakNextWord() {
+        if (index < words.length) {
+            let chunk = new SpeechSynthesisUtterance(words[index]);
+            if (voice) chunk.voice = voice;
+            speechSynthesis.speak(chunk);
+            index++;
+            setTimeout(speakNextWord, 1); // Lav en lille pause mellem ordene
+        }
+    }
+    speakNextWord();
+    }
+
+
+    function speakOld(message) {
+    const utterance = new SpeechSynthesisUtterance(message);
+    const voice = speechSynthesis.getVoices().find(v => v.lang.startsWith("da"));
+    if (voice) utterance.voice = voice;
+
+    utterance.rate = 0.7;  // Gør stemmen langsommere
+    utterance.pitch = 0.6; // Sænk tonehøjden
+    speechSynthesis.speak(utterance);
+}
+
+
     socket.on("bot message", function(msg) {
       const item = document.createElement("li");
-      item.textContent = "SRPvejleder: " + msg;
-      item.className = "bot";
+      //item.textContent = "SRPvejleder: " + msg;
+      //item.className = "bot";
       messages.appendChild(item);
       messages.scrollTop = messages.scrollHeight;
+      //speakChoppy(msg);
+      //speakMessage(msg);
+      speakOld(msg);
     });
 
     function sendMessage() {
       const message = input.value;
       if (message) {
         const item = document.createElement("li");
-        item.textContent = "Du: " + message;
+        item.textContent = message;
         item.className = "user";
         messages.appendChild(item);
         messages.scrollTop = messages.scrollHeight;
