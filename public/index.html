@@ -73,12 +73,19 @@
     const messages = document.getElementById("messages");
     const sendButton = document.getElementById("send-button");
 
+    function speakMessage(message) {
+      const utterance = new SpeechSynthesisUtterance(message);
+      utterance.lang = "da-DK"; // Sæt til dansk
+      speechSynthesis.speak(utterance);
+    }
+
     socket.on("bot message", function(msg) {
       const item = document.createElement("li");
       item.textContent = "SRPvejleder: " + msg;
       item.className = "bot";
       messages.appendChild(item);
       messages.scrollTop = messages.scrollHeight;
+      speakMessage(msg);
     });
 
     function sendMessage() {
