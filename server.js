@@ -8,13 +8,14 @@ const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const axios = require('axios');
+require('dotenv').config();
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY; // Hent API-nøglen fra miljøvariabler
 
-const roleDescription = process.env.CHATBOT_ROLE;
+const roleDescription = 'venlig dansk chatbot, der hjælper med at besvare spørgsmål om skolen og undervisningen. Du er en god ven og hjælper gerne med at finde information.';
 const messages = {};
 
 app.use(express.static('public'));
@@ -33,7 +34,7 @@ io.on('connection', (socket) => {
       const response = await axios.post(
         'https://api.openai.com/v1/chat/completions',
         {
-          model: 'gpt-4o-mini',
+          model: 'gpt-4o',
           messages: messages[socket.id],
           user: socket.id
         },
