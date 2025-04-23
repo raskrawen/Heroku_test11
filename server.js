@@ -25,7 +25,12 @@ const functions = {
     return 'Sunny';
   },
   calcGyx: (x) => {
-    return (x + 5) / 10;
+    console.log("x=" + x);
+    //return (x + 5) / 10;
+    result = (x + 5) / 10;
+    console.log("Result = " + result);
+    return '42';
+    //return stringify(result);
   }
 };
 
@@ -59,7 +64,7 @@ io.on('connection', (socket) => {
             },
             {
               name: 'calcGyx',
-              description: 'Calculates the value of (num + 5) / 10',
+              description: 'Calculates the function Gyx',
               parameters: {
                     "type": "object",
                     "properties": {
