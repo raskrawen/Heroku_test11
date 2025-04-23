@@ -20,7 +20,8 @@ const messages = {};
 function beregnStyrketal(params) {
   const antalVindmoller = params.antalVindmoller;
   console.log('Antal vindmøller:', antalVindmoller);
-  return { styrketal: 100 * Number(antalVindmoller) + 400 };
+  let styrketallet = 100 * Number(antalVindmoller) + 400;
+  return { styrketallet : "Styrketallet er " + styrketallet };
 }
 
 // Tool-definition – fortæller OpenAI hvad den kan kalde
@@ -82,7 +83,7 @@ io.on('connection', (socket) => {
       // Hvis modellen vælger at kalde et værktøj
       if (choice.finish_reason === 'tool_calls') {
         console.log("hhh");
-        const toolCall = choice.tool_calls[0]; //her opstår fejlen
+        const toolCall = choice.message.tool_calls[0]; //her opstår fejlen
         console.log('Tool kaldt:', toolCall);
         const args = JSON.parse(toolCall.function.arguments);
         console.log('Tool kaldt med argumenter:', args);
