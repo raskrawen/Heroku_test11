@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Escape Game</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      background-color: #000;
+      color: white;
+    }
+    header {
+      background-color: #000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      font-size: 18px;
+    }
+    #main {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    footer {
+      display: flex;
+      border-top: 1px solid #444;
+      padding: 10px;
+      background-color: #111;
+    }
+    #messageInput {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      background-color: #222;
+      color: white;
+      border: none;
+    }
+    #messageInput::placeholder {
+      color: #888;
+    }
+    #sendBtn {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-left: 10px;
+      cursor: pointer;
+      background-color: #444;
+      color: white;
+      border: none;
+    }
+    #sendBtn:hover {
+      background-color: #666;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div id="level">Niveau: 1</div>
+    <div id="timer">Tid: 10:00</div>
+  </header>
+
+  <div id="main">
+    <!-- Her vises dynamisk HTML-indhold -->
+  </div>
+
+  <footer>
+    <input type="text" id="messageInput" placeholder="Skriv en besked...">
+    <button id="sendBtn">Send</button>
+  </footer>
+
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script>
+    const socket = io();
+    
+    const input = document.getElementById('messageInput');
+    const sendBtn = document.getElementById('sendBtn');
+
+    function sendMessage() {
+      const message = input.value.trim();
+      if (message) {
+        socket.emit('message', message);
+        input.value = '';
+      }
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') sendMessage();
+    });
+
+    socket.on('updateContent', html => {
+      document.getElementById('main').innerHTML = html;
+    });
+
+    socket.on('updateTimer', time => {
+      document.getElementById('timer').textContent = 'Tid: ' + time;
+    });
+
+    socket.on('updateLevel', level => {
+      document.getElementById('level').textContent = 'Niveau: ' + level;
+    });
+
+    let totalSeconds = 10 * 60;
+
+    function updateCountdown() {
+      console.log(totalSeconds);
+      const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+      const seconds = String(totalSeconds % 60).padStart(2, '0');
+      document.getElementById('timer').textContent = 'Tid: ' + minutes + ':' + seconds;
+
+      if (totalSeconds > 0) {
+        //console.log(totalSeconds);
+        totalSeconds--;
+        setTimeout(updateCountdown, 1000);
+      }
+    }
+
+    updateCountdown();
+  
+  </script>
+</body>
+</html>
