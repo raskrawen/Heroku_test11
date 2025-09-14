@@ -121,13 +121,13 @@
 
     socket.on("bot message", function(msg) {
       const item = document.createElement("li");
-      //item.textContent = "SRPvejleder: " + msg;
-      //item.className = "bot";
+      item.textContent = "bot: " + msg;
+      item.className = "bot";
       messages.appendChild(item);
       messages.scrollTop = messages.scrollHeight;
       //speakChoppy(msg);
       //speakMessage(msg);
-      speakOld(msg);
+      //speakOld(msg);
     });
 
     function sendMessage() {
